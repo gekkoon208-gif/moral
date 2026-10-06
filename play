@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>道德侦探 · 魔丸团</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+  }
+
+  .game {
+    width: 100%;
+    max-width: 680px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  /* ============ 主页 ============ */
+  .home { text-align: center; animation: fadeIn 0.6s; }
+
+  .home .logo {
+    font-size: 40px;
+    margin-bottom: 8px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .home h1 {
+    font-size: 34px;
+    color: #ffd369;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 211, 105, 0.5);
+  }
+
+  .home .tagline {
+    font-size: 15px;
+    color: #aaa;
+    margin-bottom: 30px;
+    line-height: 1.8;
+  }
+
+  .home .start-btn {
+    width: 100%;
+    padding: 18px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, #ffd369, #ffb347);
+    color: #1a1a2e;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(255, 211, 105, 0.35);
+  }
+
+  .home .start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(255, 211, 105, 0.5);
+  }
+
+  .home .secondary-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: #ccc;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .home .secondary-btn:hover {
+    border-color: #ffd369;
+    color: #ffd369;
+  }
+
+  /* ============ 故事页 ============ */
+  .story { animation: fadeIn 0.6s; }
+
+  .story-scene {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .story-scene .illustration {
+    width: 100%;
+    max-width: 340px;
+    margin-bottom: 16px;
+  }
+
+  .story-scene .story-text {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #eee;
+  }
+
+  .story-scene .story-text strong { color: #ffd369; }
+
+  .story .next-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #4ecca3, #3aa17e);
+    color: #fff;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .story .next-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(78, 204, 163, 0.4);
+  }
+
+  .story .skip-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+  }
+
+  .story .skip-btn:hover { color: #ffd369; }
+
+  /* ============ 游戏页 ============ */
+  .progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .dot.active { background: #ffd369; box-shadow: 0 0 12px #ffd369; transform: scale(1.2); }
+  .dot.done { background: #4ecca3; }
+  .dot.wrong { background: #ff6b6b; }
+
+  .scene-illustration {
+    width: 100%;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+  }
+
+  .scene-card {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .scene-card h2 {
+    font-size: 18px;
+    color: #4ecca3;
+    margin-bottom: 10px;
+  }
+
+  .scene-card p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #eee;
+  }
+
+  .question {
+    font-size: 16px;
+    color: #ffd369;
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+
+  .suspects {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .suspect {
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .suspect:hover {
+    background: rgba(255, 211, 105, 0.12);
+    border-color: #ffd369;
+    transform: translateX(6px);
+  }
+
+  .suspect:disabled { cursor: not-allowed; opacity: 0.5; }
+  .suspect.correct { background: rgba(78, 204, 163, 0.2); border-color: #4ecca3; }
+  .suspect.wrong { background: rgba(255, 107, 107, 0.2); border-color: #ff6b6b; }
+
+  .suspect .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .suspect .info { flex: 1; }
+  .suspect .name { font-weight: bold; color: #ffd369; font-size: 15px; }
+  .suspect .desc { font-size: 13px; color: #bbb; margin-top: 2px; }
+
+  .feedback {
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    display: none;
+    animation: fadeIn 0.3s;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.hint { background: rgba(255, 211, 105, 0.15); border: 1px solid #ffd369; color: #ffd369; }
+  .feedback.correct { background: rgba(78, 204, 163, 0.15); border: 1px solid #4ecca3; color: #4ecca3; }
+  .feedback.wrong { background: rgba(255, 107, 107, 0.15); border: 1px solid #ff6b6b; color: #ff6b6b; }
+
+  .action-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #4ecca3, #3aa17e);
+    color: #fff;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(78, 204, 163, 0.4);
+  }
+
+  /* ============ 结算 ============ */
+  .report { animation: fadeIn 0.6s; text-align: center; }
+
+  .report .trophy {
+    font-size: 60px;
+    margin-bottom: 12px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .report h2 {
+    font-size: 26px;
+    color: #ffd369;
+    margin-bottom: 12px;
+  }
+
+  .report .result-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .report .result-desc {
+    font-size: 15px;
+    color: #ccc;
+    line-height: 1.8;
+    margin-bottom: 24px;
+    padding: 0 20px;
+  }
+
+  .report .score-box {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .report .score-item {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 16px 24px;
+    min-width: 100px;
+  }
+
+  .report .score-item .num {
+    font-size: 32px;
+    font-weight: bold;
+    color: #4ecca3;
+  }
+
+  .report .score-item .label {
+    font-size: 13px;
+    color: #aaa;
+    margin-top: 4px;
+  }
+
+  .report .captured-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .report .captured {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    background: rgba(78, 204, 163, 0.2);
+    border: 1px solid #4ecca3;
+    color: #4ecca3;
+  }
+
+  .report .escaped {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+  }
+
+  .name-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+    margin-bottom: 12px;
+    outline: none;
+    text-align: center;
+  }
+  .name-input:focus { border-color: #ffd369; }
+
+  .leaderboard {
+    margin-top: 24px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: left;
+  }
+  .leaderboard h3 {
+    font-size: 16px;
+    color: #4ecca3;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .leaderboard ol { list-style: none; }
+  .leaderboard li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #ddd;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .leaderboard li.top1 { background: rgba(255, 211, 105, 0.2); color: #ffd369; font-weight: bold; }
+  .leaderboard li.top2 { background: rgba(192, 192, 192, 0.15); color: #ddd; }
+  .leaderboard li.top3 { background: rgba(205, 127, 50, 0.15); color: #e0a060; }
+  .leaderboard .empty { text-align: center; color: #888; font-size: 14px; }
+
+  .hidden { display: none; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="game">
+
+  <!-- ============ 主页 ============ -->
+  <div class="home" id="homePage">
+    <div class="logo">🕵️‍♂️</div>
+    <h1>道德侦探</h1>
+    <div class="tagline">
+      魔丸团伪装成学生，混进了学校。<br>
+      你是侦探，要在 5 个情境中找出他们。
+    </div>
+    <button class="start-btn" id="startBtn">🔍 开始调查</button>
+    <button class="secondary-btn" id="homeLeaderboardBtn">🏆 查看排行榜</button>
+
+    <div class="leaderboard hidden" id="homeLeaderboard" style="margin-top:20px;">
+      <h3>🏆 排行榜（前 5 名）</h3>
+      <ol id="homeLeaderboardList"></ol>
+    </div>
+  </div>
+
+  <!-- ============ 故事页 ============ -->
+  <div class="story hidden" id="storyPage">
+    <div class="story-scene">
+      <div class="illustration" id="storyIllustration"></div>
+      <div class="story-text" id="storyText"></div>
+    </div>
+    <button class="next-btn" id="storyNextBtn">继续 →</button>
+    <button class="skip-btn" id="storySkipBtn">跳过故事</button>
+  </div>
+
+  <!-- ============ 游戏页 ============ -->
+  <div class="game-page hidden" id="gamePage">
+    <div class="progress" id="progress"></div>
+
+    <div class="scene-illustration" id="sceneIllustration"></div>
+
+    <div class="scene-card">
+      <h2 id="sceneTitle"></h2>
+      <p id="sceneText"></p>
+    </div>
+
+    <div class="question" id="questionText">❓ 谁是魔丸团成员？</div>
+
+    <div class="suspects" id="suspects"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="action-btn hidden" id="nextLevelBtn">下一关 →</button>
+  </div>
+
+  <!-- ============ 结算页 ============ -->
+  <div class="report hidden" id="reportPage">
+    <div class="trophy" id="trophy">🏆</div>
+    <h2>🕵️ 侦探报告</h2>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-desc" id="resultDesc"></div>
+
+    <div class="score-box">
+      <div class="score-item">
+        <div class="num" id="capturedCount">0</div>
+        <div class="label">抓到魔丸团</div>
+      </div>
+      <div class="score-item">
+        <div class="num" id="totalScore">0</div>
+        <div class="label">总分</div>
+      </div>
+    </div>
+
+    <div class="captured-list" id="capturedList"></div>
+
+    <input type="text" class="name-input" id="playerName" placeholder="输入你的名字，保存到排行榜" maxlength="10">
+    <button class="action-btn" id="saveBtn">💾 保存到排行榜</button>
+    <button class="secondary-btn" id="restartBtn" style="margin-top:12px;">🔁 再玩一次</button>
+
+    <div class="leaderboard">
+      <h3>🏆 排行榜（前 5 名）</h3>
+      <ol id="leaderboardList"></ol>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// 音效（Web Audio，无需外部文件）
+// ============================================================
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, duration, type = 'sine', volume = 0.15) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {}
+}
+function sfxClick() { playTone(600, 0.08, 'square', 0.06); }
+function sfxCorrect() {
+  playTone(523, 0.12, 'sine', 0.15);
+  setTimeout(() => playTone(659, 0.12, 'sine', 0.15), 100);
+  setTimeout(() => playTone(784, 0.2, 'sine', 0.15), 200);
+}
+function sfxWrong() {
+  playTone(300, 0.15, 'sawtooth', 0.1);
+  setTimeout(() => playTone(200, 0.25, 'sawtooth', 0.1), 120);
+}
+function sfxHint() {
+  playTone(440, 0.15, 'triangle', 0.1);
+  setTimeout(() => playTone(550, 0.15, 'triangle', 0.1), 130);
+}
+function sfxFinish() {
+  const notes = [523, 659, 784, 1047];
+  notes.forEach((n, i) => setTimeout(() => playTone(n, 0.25, 'sine', 0.15), i * 150));
+}
+
+// ============================================================
+// SVG 插图
+// ============================================================
+function svgNightTV() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <circle cx="290" cy="30" r="14" fill="#ffd369" opacity="0.8"/>
+      <circle cx="285" cy="28" r="12" fill="#1a1a3e"/>
+      <!-- 房子 -->
+      <rect x="40" y="70" width="80" height="60" fill="#2d3561"/>
+      <polygon points="40,70 80,40 120,70" fill="#4a5589"/>
+      <rect x="60" y="90" width="20" height="40" fill="#ffd369" opacity="0.9"/>
+      <!-- 邻居房子 -->
+      <rect x="180" y="70" width="80" height="60" fill="#2d3561"/>
+      <polygon points="180,70 220,40 260,70" fill="#4a5589"/>
+      <rect x="200" y="90" width="20" height="40" fill="#555"/>
+      <rect x="235" y="90" width="20" height="40" fill="#555"/>
+      <!-- 声音波纹 -->
+      <path d="M 120 90 Q 140 80 160 90" stroke="#ff6b6b" stroke-width="2" fill="none" opacity="0.7"/>
+      <path d="M 120 100 Q 140 90 160 100" stroke="#ff6b6b" stroke-width="2" fill="none" opacity="0.5"/>
+      <text x="170" y="30" font-size="10" fill="#ff6b6b">🔊 太吵了！</text>
+    </svg>
+  `;
+}
+
+function svgPiano() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <circle cx="50" cy="30" r="14" fill="#ffd369" opacity="0.8"/>
+      <circle cx="45" cy="28" r="12" fill="#1a1a3e"/>
+      <!-- 钢琴 -->
+      <rect x="100" y="70" width="140" height="50" fill="#2d3561" rx="4"/>
+      <rect x="110" y="80" width="120" height="20" fill="#eee" rx="2"/>
+      <rect x="115" y="80" width="14" height="20" fill="#333"/>
+      <rect x="135" y="80" width="14" height="20" fill="#333"/>
+      <rect x="155" y="80" width="14" height="20" fill="#333"/>
+      <!-- 音符 -->
+      <text x="150" y="40" font-size="20" fill="#ff6b6b">🎵</text>
+      <text x="200" y="50" font-size="16" fill="#ff6b6b">🎵</text>
+      <text x="90" y="50" font-size="16" fill="#ff6b6b">🎵</text>
+      <text x="180" y="25" font-size="10" fill="#ff6b6b">半夜弹琴！</text>
+    </svg>
+  `;
+}
+
+function svgParty() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <!-- 气球 -->
+      <circle cx="80" cy="40" r="16" fill="#ff6b6b"/>
+      <circle cx="120" cy="30" r="14" fill="#4ecca3"/>
+      <circle cx="160" cy="45" r="16" fill="#ffd369"/>
+      <circle cx="220" cy="35" r="14" fill="#a78bfa"/>
+      <!-- 线 -->
+      <line x1="80" y1="56" x2="80" y2="70" stroke="#888" stroke-width="1"/>
+      <line x1="120" y1="44" x2="120" y2="70" stroke="#888" stroke-width="1"/>
+      <line x1="160" y1="61" x2="160" y2="80" stroke="#888" stroke-width="1"/>
+      <line x1="220" y1="49" x2="220" y2="70" stroke="#888" stroke-width="1"/>
+      <!-- 桌子 -->
+      <rect x="60" y="90" width="220" height="30" fill="#2d3561" rx="4"/>
+      <!-- 礼物 -->
+      <rect x="90" y="70" width="24" height="24" fill="#ffd369"/>
+      <rect x="98" y="70" width="8" height="24" fill="#ff6b6b"/>
+      <rect x="140" y="75" width="20" height="20" fill="#4ecca3"/>
+      <!-- 占通道 -->
+      <rect x="200" y="80" width="60" height="20" fill="#a78bfa" opacity="0.7" rx="4"/>
+      <text x="210" y="94" font-size="10" fill="#fff">占了通道</text>
+    </svg>
+  `;
+}
+
+function svgTalk() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <!-- 两个人 -->
+      <circle cx="90" cy="60" r="20" fill="#4ecca3"/>
+      <rect x="75" y="80" width="30" height="40" fill="#4ecca3" rx="4"/>
+      <circle cx="250" cy="60" r="20" fill="#ffd369"/>
+      <rect x="235" y="80" width="30" height="40" fill="#ffd369" rx="4"/>
+      <!-- 对话气泡 -->
+      <rect x="120" y="20" width="100" height="40" fill="#fff" rx="12"/>
+      <polygon points="130,60 140,60 130,70" fill="#fff"/>
+      <text x="130" y="38" font-size="10" fill="#333">你这样做</text>
+      <text x="130" y="52" font-size="10" fill="#333">真是太差劲了！</text>
+      <!-- 星星 -->
+      <text x="60" y="30" font-size="14" fill="#ff6b6b">😠</text>
+      <text x="270" y="30" font-size="14" fill="#ff6b6b">😢</text>
+    </svg>
+  `;
+}
+
+function svgStars() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <!-- 中间的人 -->
+      <circle cx="170" cy="70" r="24" fill="#ffd369"/>
+      <text x="160" y="78" font-size="20" fill="#1a1a3e">😊</text>
+      <!-- 左：吹捧 -->
+      <text x="40" y="50" font-size="24" fill="#ff6b6b">🌟</text>
+      <text x="40" y="80" font-size="24" fill="#ff6b6b">🌟</text>
+      <text x="40" y="110" font-size="24" fill="#ff6b6b">🌟</text>
+      <text x="75" y="50" font-size="9" fill="#ff6b6b">天下第一</text>
+      <!-- 右：贬低 -->
+      <text x="250" y="50" font-size="20" fill="#888">💤</text>
+      <text x="250" y="80" font-size="20" fill="#888">💤</text>
+      <text x="250" y="110" font-size="20" fill="#888">💤</text>
+      <text x="245" y="130" font-size="9" fill="#888">一无是处</text>
+      <!-- 中间：实事求是 -->
+      <text x="150" y="125" font-size="10" fill="#4ecca3">他做得不错</text>
+    </svg>
+  `;
+}
+
+function svgDetective() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <!-- 侦探 -->
+      <circle cx="170" cy="60" r="30" fill="#4ecca3"/>
+      <text x="152" y="72" font-size="30">🕵️</text>
+      <!-- 放大镜 -->
+      <circle cx="220" cy="90" r="18" fill="none" stroke="#ffd369" stroke-width="3"/>
+      <line x1="233" y1="103" x2="250" y2="120" stroke="#ffd369" stroke-width="4"/>
+      <!-- 星星 -->
+      <text x="50" y="40" font-size="16" fill="#ffd369">✨</text>
+      <text x="280" y="40" font-size="16" fill="#ffd369">✨</text>
+    </svg>
+  `;
+}
+
+function svgBadGuys() {
+  return `
+    <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="340" height="140" fill="#1a1a3e"/>
+      <!-- 5 个剪影 -->
+      <circle cx="60" cy="60" r="18" fill="#ff6b6b" opacity="0.7"/>
+      <circle cx="120" cy="60" r="18" fill="#ff6b6b" opacity="0.7"/>
+      <circle cx="180" cy="60" r="18" fill="#ff6b6b" opacity="0.7"/>
+      <circle cx="240" cy="60" r="18" fill="#ff6b6b" opacity="0.7"/>
+      <circle cx="300" cy="60" r="18" fill="#ff6b6b" opacity="0.7"/>
+      <rect x="45" y="80" width="30" height="40" fill="#ff6b6b" opacity="0.7" rx="4"/>
+      <rect x="105" y="80" width="30" height="40" fill="#ff6b6b" opacity="0.7" rx="4"/>
+      <rect x="165" y="80" width="30" height="40" fill="#ff6b6b" opacity="0.7" rx="4"/>
+      <rect x="225" y="80" width="30" height="40" fill="#ff6b6b" opacity="0.7" rx="4"/>
+      <rect x="285" y="80" width="30" height="40" fill="#ff6b6b" opacity="0.7" rx="4"/>
+      <text x="95" y="30" font-size="14" fill="#ffd369">魔丸团</text>
+    </svg>
+  `;
+}
+
+// ============================================================
+// 故事页数据
+// ============================================================
+const storyPages = [
+  {
+    illustration: svgBadGuys(),
+    text: `在城市的某个角落，有 5 个捣蛋鬼，<br>他们组成了一个坏蛋团体——<strong>魔丸团</strong>。`
+  },
+  {
+    illustration: svgBadGuys(),
+    text: `魔丸团的 5 个成员是：<br><strong>子轩、诗雅、伟杰、欣怡、宇航</strong>。<br>他们专门做让人讨厌的事。`
+  },
+  {
+    illustration: svgDetective(),
+    text: `为了躲避<strong>道德警卫队</strong>的追捕，<br>他们伪装成学生，混进了学校。`
+  },
+  {
+    illustration: svgDetective(),
+    text: `现在，你是一名<strong>侦探</strong>。<br>你要在 5 个校园情境中，<br>把他们一个一个找出来。`
+  },
+  {
+    illustration: svgDetective(),
+    text: `每一关会有 3 个同学，<br>其中只有 <strong>1 个</strong>是魔丸团成员。<br>看他们的行为，选出最可疑的那个！`
+  }
+];
+
+// ============================================================
+// 题目数据（5 关）
+// ============================================================
+const levels = [
+  {
+    title: "第一关｜半夜的电视声",
+    scene: "晚上 11 点，邻居已经睡了。你经过一栋房子，听到很大的电视声。",
+    illustration: svgNightTV(),
+    suspects: [
+      { name: "子轩", avatar: "👦", desc: "把电视音量开到最大，看到半夜", isCulprit: true },
+      { name: "思思", avatar: "👧", desc: "提醒子轩小声一点，邻居在休息", isCulprit: false },
+      { name: "可灵", avatar: "🧒", desc: "戴上耳机看，不吵到别人", isCulprit: false }
+    ],
+    hint: "想一想：课本说‘作息要有节制’。谁没有顾及邻居的休息？",
+    explanation: "子轩半夜把电视开得很大声，违反了‘作息有节制’，是魔丸团成员。"
+  },
+  {
+    title: "第二关｜深夜的钢琴",
+    scene: "凌晨 1 点，整栋楼都很安静。你听到有人在弹钢琴。",
+    illustration: svgPiano(),
+    suspects: [
+      { name: "诗雅", avatar: "👧", desc: "觉得灵感来了，半夜大声弹琴", isCulprit: true },
+      { name: "伟杰", avatar: "👦", desc: "想弹琴，但等到早上才弹", isCulprit: false },
+      { name: "欣怡", avatar: "👩", desc: "戴上耳机练琴，不发出声音", isCulprit: false }
+    ],
+    hint: "想一想：邻居在休息的时候，谁没有控制音量？",
+    explanation: "诗雅半夜大声弹琴，制造噪音，是魔丸团成员。"
+  },
+  {
+    title: "第三关｜节日派对",
+    scene: "邻居家在办节日派对。你经过时，看到门口的情况。",
+    illustration: svgParty(),
+    suspects: [
+      { name: "宇航", avatar: "👦", desc: "把礼物堆满邻居通道，不让人过", isCulprit: true },
+      { name: "子轩", avatar: "👦", desc: "礼物只买需要的，不铺张", isCulprit: false },
+      { name: "思思", avatar: "👧", desc: "派对结束后主动清理通道", isCulprit: false }
+    ],
+    hint: "想一想：课本说‘适度庆祝’。谁占用了邻居的通道？",
+    explanation: "宇航把礼物堆满通道，违反‘适度庆祝’，是魔丸团成员。"
+  },
+  {
+    title: "第四关｜邻居做错事",
+    scene: "邻居不小心把垃圾丢到你家门口。你要去跟他说。",
+    illustration: svgTalk(),
+    suspects: [
+      { name: "欣怡", avatar: "👩", desc: "大声骂：‘你怎么这么没教养！’", isCulprit: true },
+      { name: "可灵", avatar: "🧒", desc: "温和地说：‘麻烦您下次注意一下。’", isCulprit: false },
+      { name: "伟杰", avatar: "👦", desc: "好好说，还帮邻居一起捡", isCulprit: false }
+    ],
+    hint: "想一想：课本说‘说话得体留有余地’。谁说话刻薄、夸张？",
+    explanation: "欣怡说话刻薄、用夸张字眼，违反‘说话得体’，是魔丸团成员。"
+  },
+  {
+    title: "第五关｜评价邻居",
+    scene: "邻居家的孩子考试考了 80 分。大家在讨论他。",
+    illustration: svgStars(),
+    suspects: [
+      { name: "宇航", avatar: "👦", desc: "说：‘他天下第一，无人能比！’", isCulprit: true },
+      { name: "诗雅", avatar: "👧", desc: "说：‘他这次考得不错，继续加油。’", isCulprit: false },
+      { name: "子轩", avatar: "👦", desc: "说：‘80 分还有进步空间。’", isCulprit: false }
+    ],
+    hint: "想一想：课本说‘不夸大其词’。谁过度吹捧，不实事求是？",
+    explanation: "宇航过度吹捧，不实事求是，违反‘不夸大其词’，是魔丸团成员。"
+  }
+];
+
+// ============================================================
+// 状态
+// ============================================================
+let currentLevel = 0;
+let storyIndex = 0;
+let triedWrong = false; // 本关是否已经选错一次
+let captured = [];      // 抓到的魔丸团成员名
+let results = [];       // 每关结果：true/false
+let totalScore = 0;
+
+// ============================================================
+// DOM
+// ============================================================
+const homePage = document.getElementById('homePage');
+const storyPage = document.getElementById('storyPage');
+const gamePage = document.getElementById('gamePage');
+const reportPage = document.getElementById('reportPage');
+
+const startBtn = document.getElementById('startBtn');
+const homeLeaderboardBtn = document.getElementById('homeLeaderboardBtn');
+const homeLeaderboard = document.getElementById('homeLeaderboard');
+const homeLeaderboardList = document.getElementById('homeLeaderboardList');
+
+const storyIllustration = document.getElementById('storyIllustration');
+const storyText = document.getElementById('storyText');
+const storyNextBtn = document.getElementById('storyNextBtn');
+const storySkipBtn = document.getElementById('storySkipBtn');
+
+const progressEl = document.getElementById('progress');
+const sceneIllustration = document.getElementById('sceneIllustration');
+const sceneTitle = document.getElementById('sceneTitle');
+const sceneText = document.getElementById('sceneText');
+const questionText = document.getElementById('questionText');
+const suspectsEl = document.getElementById('suspects');
+const feedbackEl = document.getElementById('feedback');
+const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+const trophy = document.getElementById('trophy');
+const resultTitle = document.getElementById('resultTitle');
+const resultDesc = document.getElementById('resultDesc');
+const capturedCount = document.getElementById('capturedCount');
+const totalScoreEl = document.getElementById('totalScore');
+const capturedList = document.getElementById('capturedList');
+const playerName = document.getElementById('playerName');
+const saveBtn = document.getElementById('saveBtn');
+const restartBtn = document.getElementById('restartBtn');
+const leaderboardList = document.getElementById('leaderboardList');
+
+// ============================================================
+// 页面切换
+// ============================================================
+function showPage(page) {
+  [homePage, storyPage, gamePage, reportPage].forEach(p => p.classList.add('hidden'));
+  page.classList.remove('hidden');
+}
+
+// ============================================================
+// 主页
+// ============================================================
+startBtn.onclick = () => {
+  sfxClick();
+  storyIndex = 0;
+  currentLevel = 0;
+  triedWrong = false;
+  captured = [];
+  results = [];
+  totalScore = 0;
+  renderStory();
+  showPage(storyPage);
+};
+
+homeLeaderboardBtn.onclick = () => {
+  sfxClick();
+  homeLeaderboard.classList.toggle('hidden');
+  if (!homeLeaderboard.classList.contains('hidden')) {
+    renderLeaderboard(homeLeaderboardList);
+  }
+};
+
+// ============================================================
+// 故事页
+// ============================================================
+function renderStory() {
+  const page = storyPages[storyIndex];
+  storyIllustration.innerHTML = page.illustration;
+  storyText.innerHTML = page.text;
+  storyNextBtn.textContent = storyIndex === storyPages.length - 1 ? '开始调查 →' : '继续 →';
+}
+
+storyNextBtn.onclick = () => {
+  sfxClick();
+  storyIndex++;
+  if (storyIndex >= storyPages.length) {
+    startGame();
+  } else {
+    renderStory();
+  }
+};
+
+storySkipBtn.onclick = () => {
+  sfxClick();
+  startGame();
+};
+
+// ============================================================
+// 游戏
+// ============================================================
+function startGame() {
+  currentLevel = 0;
+  triedWrong = false;
+  renderLevel();
+  showPage(gamePage);
+}
+
+function renderProgress() {
+  progressEl.innerHTML = '';
+  for (let i = 0; i < levels.length; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    if (i < currentLevel) {
+      dot.classList.add(results[i] ? 'done' : 'wrong');
+    } else if (i === currentLevel) {
+      dot.classList.add('active');
+    }
+    progressEl.appendChild(dot);
+  }
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderLevel() {
+  const level = levels[currentLevel];
+  triedWrong = false;
+
+  sceneIllustration.innerHTML = level.illustration;
+  sceneTitle.textContent = level.title;
+  sceneText.textContent = level.scene;
+  questionText.textContent = '❓ 谁是魔丸团成员？';
+
+  const shuffled = shuffle(level.suspects);
+
+  suspectsEl.innerHTML = '';
+  shuffled.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'suspect';
+    btn.innerHTML = `
+      <div class="avatar">${s.avatar}</div>
+      <div class="info">
+        <div class="name">${s.name}</div>
+        <div class="desc">${s.desc}</div>
+      </div>
+    `;
+    btn.onclick = () => selectSuspect(s, btn, shuffled);
+    suspectsEl.appendChild(btn);
+  });
+
+  feedbackEl.className = 'feedback';
+  feedbackEl.innerHTML = '';
+  nextLevelBtn.classList.add('hidden');
+
+  renderProgress();
+}
+
+function selectSuspect(suspect, btn, shuffled) {
+  if (suspect.isCulprit) {
+    // 选对
+    sfxCorrect();
+    btn.classList.add('correct');
+    // 禁用所有按钮
+    Array.from(suspectsEl.children).forEach(b => b.disabled = true);
+
+    const level = levels[currentLevel];
+    const bonus = triedWrong ? 10 : 20;
+    totalScore += bonus;
+    captured.push(suspect.name);
+    results[currentLevel] = true;
+
+    feedbackEl.className = 'feedback correct show';
+    feedbackEl.innerHTML = `
+      ✅ 抓到了！<strong>${suspect.name}</strong> 就是魔丸团成员。<br>
+      ${level.explanation}<br>
+      <span style="color:#ffd369;">+${bonus} 分</span>
+    `;
+
+    nextLevelBtn.classList.remove('hidden');
+    renderProgress();
+  } else {
+    // 选错
+    if (!triedWrong) {
+      sfxHint();
+      triedWrong = true;
+      btn.classList.add('wrong');
+      btn.disabled = true;
+      const level = levels[currentLevel];
+      feedbackEl.className = 'feedback hint show';
+      feedbackEl.innerHTML = `💡 提示：${level.hint}<br>再选一次吧。`;
+    } else {
+      // 第二次选错，公布答案
+      sfxWrong();
+      Array.from(suspectsEl.children).forEach(b => b.disabled = true);
+      // 找到真正的坏蛋并标绿
+      Array.from(suspectsEl.children).forEach((b, i) => {
+        const s = shuffled[i];
+        if (s.isCulprit) b.classList.add('correct');
+      });
+
+      const level = levels[currentLevel];
+      results[currentLevel] = false;
+
+      feedbackEl.className = 'feedback wrong show';
+      feedbackEl.innerHTML = `
+        ❌ 又错了。正确答案是 <strong>${level.suspects.find(s => s.isCulprit).name}</strong>。<br>
+        ${level.explanation}<br>
+        <span style="color:#888;">这一关没有加分</span>
+      `;
+
+      nextLevelBtn.classList.remove('hidden');
+      renderProgress();
+    }
+  }
+}
+
+nextLevelBtn.onclick = () => {
+  sfxClick();
+  currentLevel++;
+  if (currentLevel >= levels.length) {
+    showReport();
+  } else {
+    renderLevel();
+  }
+};
+
+// ============================================================
+// 结算
+// ============================================================
+function showReport() {
+  sfxFinish();
+  const count = captured.length;
+
+  capturedCount.textContent = count + ' / 5';
+  totalScoreEl.textContent = totalScore;
+
+  let title, desc, trophyIcon;
+
+  if (count === 5) {
+    trophyIcon = '🏆';
+    title = '金牌侦探';
+    desc = '太厉害了！你把魔丸团 5 个成员全部抓到了。你非常了解中庸的意义：凡事不偏不倚，适可而止，顾及邻居的感受。';
+  } else if (count >= 3) {
+    trophyIcon = '🥈';
+    title = '银牌侦探';
+    desc = '不错！你抓到了大部分魔丸团成员。再仔细想想课本里说的‘中庸’：不浪费、有节制、说话得体、不夸大。';
+  } else if (count >= 1) {
+    trophyIcon = '🥉';
+    title = '铜牌侦探';
+    desc = '你抓到了一部分。魔丸团很狡猾，他们会假装成普通学生。下次注意观察：谁的行为没有顾及邻居？';
+  } else {
+    trophyIcon = '😵';
+    title = '魔丸团逃走了';
+    desc = '哎呀，一个都没抓到。再玩一次，仔细看每个同学的行为，想想课本里的‘中庸’是什么。';
+  }
+
+  trophy.textContent = trophyIcon;
+  resultTitle.textContent = title;
+  resultDesc.textContent = desc;
+
+  // 显示抓到 / 逃走名单
+  capturedList.innerHTML = '';
+  const allNames = ['子轩', '诗雅', '伟杰', '欣怡', '宇航'];
+  allNames.forEach(name => {
+    const span = document.createElement('span');
+    if (captured.includes(name)) {
+      span.className = 'captured';
+      span.textContent = '✅ ' + name;
+    } else {
+      span.className = 'escaped';
+      span.textContent = '❌ ' + name;
+    }
+    capturedList.appendChild(span);
+  });
+
+  playerName.value = '';
+  saveBtn.disabled = false;
+  saveBtn.textContent = '💾 保存到排行榜';
+
+  renderLeaderboard(leaderboardList);
+  showPage(reportPage);
+}
+
+// ============================================================
+// 排行榜
+// ============================================================
+function getLeaderboard() {
+  try {
+    const raw = localStorage.getItem('moralDetectiveLeaderboard');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveLeaderboard(list) {
+  try {
+    localStorage.setItem('moralDetectiveLeaderboard', JSON.stringify(list));
+  } catch (e) {}
+}
+
+function renderLeaderboard(targetEl) {
+  const list = getLeaderboard();
+  targetEl.innerHTML = '';
+
+  if (list.length === 0) {
+    targetEl.innerHTML = '<div class="empty">还没有记录，快来成为第一名！</div>';
+    return;
+  }
+
+  list.sort((a, b) => b.score - a.score);
+  const top5 = list.slice(0, 5);
+
+  top5.forEach((entry, i) => {
+    const li = document.createElement('li');
+    if (i === 0) li.classList.add('top1');
+    else if (i === 1) li.classList.add('top2');
+    else if (i === 2) li.classList.add('top3');
+    li.innerHTML = `<span>${i + 1}. ${entry.name}</span><span>${entry.score} 分 · ${entry.title}</span>`;
+    targetEl.appendChild(li);
+  });
+}
+
+saveBtn.onclick = () => {
+  const name = playerName.value.trim() || '匿名侦探';
+  const list = getLeaderboard();
+  list.push({
+    name: name,
+    score: totalScore,
+    title: resultTitle.textContent,
+    date: Date.now()
+  });
+  saveLeaderboard(list);
+  renderLeaderboard(leaderboardList);
+  sfxCorrect();
+  saveBtn.disabled = true;
+  saveBtn.textContent = '✅ 已保存';
+};
+
+// ============================================================
+// 重新开始
+// ============================================================
+restartBtn.onclick = () => {
+  sfxClick();
+  showPage(homePage);
+};
+
+</script>
+
+</body>
+</html>
